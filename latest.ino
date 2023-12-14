@@ -19,7 +19,7 @@ const char* ssid = "realmegt";
 const char* password = "gt123abc";
 String serverUrl = "http://api.openweathermap.org/data/2.5/weather?q=KOCHI&appid=7f29f73f56a4c0e81cbdd4900b8886bb";
 
-const int touchSensorPin = 2; // Change this to the pin connected to your touch sensor
+const int touchSensorPin = D6; // Change this to the pin connected to your touch sensor
 
 Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 DHT11 dht11(D3);
@@ -28,7 +28,7 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 unsigned long lastTime = 0;
-unsigned long timerDelay = 15000; // 15 seconds
+unsigned long timerDelay = 10000; // 15 seconds
 bool displayWeather = false;
 int displayCount = 0;
 bool touchTriggered = false;
@@ -52,9 +52,31 @@ void loop() {
     touchTriggered = true;
     displayCount = 0;
   }
-  if ((millis() - lastTime) > timerDelay) {
+  if ((millis() - lastTime) > timerDelay && touchTriggered) {
     display.clearDisplay();
-    if (touchTriggered && displayCount < 2) {
+    if (displayCount < 2) {
+      float t = dht11.readTemperature();
+      float h = dht11.readHumidity();
+      display.setTextSize(1);
+      display.setCursor(0,0);
+      display.print("Temperature: ");
+      display.setTextSize(2);
+      display.setCursor(0,10);
+      display.print(t);
+      display.print(" C");
+      display.display();
+      delay(timerDelay);
+      display.clearDisplay();
+      display.setTextSize(1);
+      display.setCursor(0,35);
+      display.print("Humidity: ");
+      display.setTextSize(2);
+      display.setCursor(0,45);
+      display.print(h);
+      display.print(" %");
+      display.display();
+      delay(timerDelay);
+      display.clearDisplay();
       if(WiFi.status() == WL_CONNECTED) {
         WiFiClient client;
         HTTPClient http;
@@ -80,36 +102,16 @@ void loop() {
             display.setTextSize(2);
             display.setCursor(0,45);
             display.print(weather_description);
+            display.display();
           }
         }
         http.end();
       }
-      displayCount++;
-    } else {
-      if (displayCount >= 2) {
-        touchTriggered = false;
-      }
-      float t = dht11.readTemperature();
-      float h = dht11.readHumidity();
-      display.setTextSize(1);
-      display.setCursor(0,0);
-      display.print("Temperature: ");
-      display.setTextSize(2);
-      display.setCursor(0,10);
-      display.print(t);
-      display.print(" C");
-      display.display();
-      delay(timerDelay);
-      display.clearDisplay();
-      display.setTextSize(1);
-      display.setCursor(0,35);
-      display.print("Humidity: ");
-      display.setTextSize(2);
-      display.setCursor(0,45);
-      display.print(h);
-      display.print(" %");
     }
-    display.display();
+    displayCount++;
+    if (displayCount >= 2) {
+      touchTriggered = false;
+    }
     lastTime = millis();
   } else {
     display.clearDisplay();
