@@ -28,10 +28,15 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 unsigned long lastTime = 0;
-unsigned long timerDelay = 10000; // 15 seconds
+unsigned long timerDelay = 15000; // 15 seconds
 bool displayWeather = false;
 int displayCount = 0;
-bool touchTriggered = false;
+volatile bool touchTriggered = false;
+
+void touchSensorInterrupt() {
+  touchTriggered = true;
+  displayCount = 0;
+}
 
 void setup() {
   Serial.begin(115200);
@@ -42,16 +47,13 @@ void setup() {
   display.clearDisplay();
   display.setTextColor(SH110X_WHITE);
   pinMode(touchSensorPin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(touchSensorPin), touchSensorInterrupt, RISING);
   timeClient.begin();
   timeClient.setTimeOffset(19800); // Set your timezone offset in seconds (19800 is for IST)
 }
 
 void loop() {
   timeClient.update();
-  if (digitalRead(touchSensorPin) == HIGH) {
-    touchTriggered = true;
-    displayCount = 0;
-  }
   if ((millis() - lastTime) > timerDelay && touchTriggered) {
     display.clearDisplay();
     if (displayCount < 2) {
@@ -114,10 +116,10 @@ void loop() {
   } else {
     display.clearDisplay();
     display.setTextSize(1);
-    display.setCursor(0,0);
+    display.setCursor(0,10);
     display.print("Time: ");
     display.setTextSize(2);
-    display.setCursor(0,10);
+    display.setCursor(0,35);
     display.print(timeClient.getFormattedTime());
     display.display();
   }
