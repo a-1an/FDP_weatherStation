@@ -64,9 +64,6 @@ void loop() {
       display.setCursor(0,10);
       display.print(t);
       display.print(" C");
-      display.display();
-      delay(timerDelay);
-      display.clearDisplay();
       display.setTextSize(1);
       display.setCursor(0,35);
       display.print("Humidity: ");
@@ -103,6 +100,7 @@ void loop() {
             display.setCursor(0,45);
             display.print(weather_description);
             display.display();
+            delay(timerDelay);
           }
         }
         http.end();
