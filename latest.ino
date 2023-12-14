@@ -19,7 +19,7 @@ const char* ssid = "realmegt";
 const char* password = "gt123abc";
 String serverUrl = "http://api.openweathermap.org/data/2.5/weather?q=KOCHI&appid=7f29f73f56a4c0e81cbdd4900b8886bb";
 
-const int touchSensorPin = D6; // Change this to the pin connected to your touch sensor
+const int touchSensorPin = 2; // Change this to the pin connected to your touch sensor
 
 Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 DHT11 dht11(D3);
@@ -31,6 +31,7 @@ unsigned long lastTime = 0;
 unsigned long timerDelay = 15000; // 15 seconds
 bool displayWeather = false;
 int displayCount = 0;
+bool touchTriggered = false;
 
 void setup() {
   Serial.begin(115200);
@@ -47,9 +48,13 @@ void setup() {
 
 void loop() {
   timeClient.update();
-  if ((millis() - lastTime) > timerDelay || digitalRead(touchSensorPin) == HIGH) {
+  if (digitalRead(touchSensorPin) == HIGH) {
+    touchTriggered = true;
+    displayCount = 0;
+  }
+  if ((millis() - lastTime) > timerDelay || touchTriggered) {
     display.clearDisplay();
-    if (displayWeather && displayCount < 2) {
+    if (touchTriggered && displayCount < 2) {
       if(WiFi.status() == WL_CONNECTED) {
         WiFiClient client;
         HTTPClient http;
@@ -82,8 +87,7 @@ void loop() {
       displayCount++;
     } else {
       if (displayCount >= 2) {
-        displayWeather = false;
-        displayCount = 0;
+        touchTriggered = false;
       }
       float t = dht11.readTemperature();
       float h = dht11.readHumidity();
@@ -103,9 +107,6 @@ void loop() {
       display.print(" %");
     }
     display.display();
-    if (digitalRead(touchSensorPin) == HIGH) {
-      displayWeather = !displayWeather;
-    }
     lastTime = millis();
   } else {
     display.clearDisplay();
@@ -115,21 +116,6 @@ void loop() {
     display.setTextSize(2);
     display.setCursor(0,10);
     display.print(timeClient.getFormattedTime());
-    display.setTextSize(1);
-    display.setCursor(0,35);
-    display.print("Date: ");
-    display.setTextSize(2);
-    display.setCursor(0,45);
-    // Calculate the date from the epoch time
-    unsigned long epochTime = timeClient.getEpochTime();
-    String day = String((epochTime  / (DAY_LENGTH)) % 31);
-    String month = String((epochTime / (DAY_LENGTH * 31)) % 12);
-    String year = String((epochTime / (DAY_LENGTH * 365.25)) + 1970);
-    display.print(month);
-    display.print("/");
-    display.print(day);
-    display.print("/");
-    display.print(year);
     display.display();
   }
 }
