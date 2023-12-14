@@ -15,8 +15,8 @@
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 
-const char* ssid = "realmegt";
-const char* password = "gt123abc";
+const char* ssid = "OPPO";
+const char* password = "blynk1234";
 String serverUrl = "http://api.openweathermap.org/data/2.5/weather?q=KOCHI&appid=7f29f73f56a4c0e81cbdd4900b8886bb";
 
 const int touchSensorPin = D6; // Change this to the pin connected to your touch sensor
@@ -28,15 +28,10 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 
 unsigned long lastTime = 0;
-unsigned long timerDelay = 15000; // 15 seconds
+unsigned long timerDelay = 5000; // 15 seconds
 bool displayWeather = false;
 int displayCount = 0;
-volatile bool touchTriggered = false;
-
-void touchSensorInterrupt() {
-  touchTriggered = true;
-  displayCount = 0;
-}
+bool touchTriggered = false;
 
 void setup() {
   Serial.begin(115200);
@@ -47,13 +42,16 @@ void setup() {
   display.clearDisplay();
   display.setTextColor(SH110X_WHITE);
   pinMode(touchSensorPin, INPUT);
-  attachInterrupt(digitalPinToInterrupt(touchSensorPin), touchSensorInterrupt, RISING);
   timeClient.begin();
   timeClient.setTimeOffset(19800); // Set your timezone offset in seconds (19800 is for IST)
 }
 
 void loop() {
   timeClient.update();
+  if (digitalRead(touchSensorPin) == HIGH) {
+    touchTriggered = true;
+    displayCount = 0;
+  }
   if ((millis() - lastTime) > timerDelay && touchTriggered) {
     display.clearDisplay();
     if (displayCount < 2) {
@@ -66,6 +64,7 @@ void loop() {
       display.setCursor(0,10);
       display.print(t);
       display.print(" C");
+      display.display();
       display.setTextSize(1);
       display.setCursor(0,35);
       display.print("Humidity: ");
@@ -114,13 +113,30 @@ void loop() {
     }
     lastTime = millis();
   } else {
+    display.display();
     display.clearDisplay();
-    display.setTextSize(1);
+    display.setTextSize(2);
     display.setCursor(0,10);
     display.print("Time: ");
     display.setTextSize(2);
     display.setCursor(0,35);
-    display.print(timeClient.getFormattedTime());
-    display.display();
+
+    int hour = timeClient.getHours(); // get the hour in 24-hour format
+    String am_pm = "AM";
+
+    if(hour >= 12) {
+      if(hour > 12) hour = hour - 12;
+          am_pm = "PM";
+        }
+       if(hour == 0) {
+        hour = 12;
+        }
+
+        // Now 'hour' contains the time in 12-hour format and 'am_pm' contains either "AM" or "PM"
+         String time_str = String(hour) + ":" + String(timeClient.getMinutes()) + " " + am_pm;
+
+          display.print(time_str);
+          display.display();
+
   }
 }
