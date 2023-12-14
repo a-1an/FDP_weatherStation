@@ -19,7 +19,7 @@ const char* ssid = "realmegt";
 const char* password = "gt123abc";
 String serverUrl = "http://api.openweathermap.org/data/2.5/weather?q=KOCHI&appid=7f29f73f56a4c0e81cbdd4900b8886bb";
 
-const int touchSensorPin = 2; // Change this to the pin connected to your touch sensor
+const int touchSensorPin = D6; // Change this to the pin connected to your touch sensor
 
 Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 DHT11 dht11(D3);
@@ -120,7 +120,16 @@ void loop() {
     display.print("Date: ");
     display.setTextSize(2);
     display.setCursor(0,45);
-    display.print(timeClient.getFormattedDate());
+    // Calculate the date from the epoch time
+    unsigned long epochTime = timeClient.getEpochTime();
+    String day = String((epochTime  / (DAY_LENGTH)) % 31);
+    String month = String((epochTime / (DAY_LENGTH * 31)) % 12);
+    String year = String((epochTime / (DAY_LENGTH * 365.25)) + 1970);
+    display.print(month);
+    display.print("/");
+    display.print(day);
+    display.print("/");
+    display.print(year);
     display.display();
   }
 }
