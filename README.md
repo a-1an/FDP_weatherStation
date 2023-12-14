@@ -10,7 +10,14 @@ This project is part of a Faculty Development Program (FDP) workshop. The goal i
 
 ## Setup
 1. Connect the DHT11 sensor to the NodeMCU.
+        GND---->GND
+        VCC---->VIN
+        DATA---->D3
 2. Connect the NodeMCU to the OLED screen.
+        GND----->GND
+        VCC----->3V3
+        SDA----->SDA(D2)
+        SCL----->SCL(D1)
 3. Upload the provided code to the NodeMCU using the Arduino IDE.
 
 ## Code
@@ -23,7 +30,7 @@ We welcome contributions to this project. If you have a feature request, bug rep
 This project is open source, under the MIT license.
 
 ## Contact
-If you have any questions or need further clarification, feel free to reach out to us.
+[www.ide](https://idealab.mec.ac.in/)
 
 ## Acknowledgements
 We would like to thank all the students participating in this workshop. Your enthusiasm and hard work make this project possible.
