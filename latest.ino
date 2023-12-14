@@ -19,7 +19,7 @@ const char* ssid = "realmegt";
 const char* password = "gt123abc";
 String serverUrl = "http://api.openweathermap.org/data/2.5/weather?q=KOCHI&appid=7f29f73f56a4c0e81cbdd4900b8886bb";
 
-const int touchSensorPin = 2; // Change this to the pin connected to your touch sensor
+const int touchSensorPin = D6; // Change this to the pin connected to your touch sensor
 
 Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 DHT11 dht11(D3);
