@@ -1,7 +1,7 @@
 # Weather Station Project
 
 ## Overview
-This project is part of a Faculty Development Program (FDP) workshop. The goal is to build a weather station using a DHT11 sensor, NodeMCU, and a 1.3-inch OLED screen.
+This project is part of a Faculty Development Program (FDP) workshop. The goal is to build a weather station by getting the weather data from OPENWEATHERMAP API using API call and display the weather on the oled screen.
 
 ## Materials
 - DHT11 sensor: This sensor is used to measure temperature and humidity.
