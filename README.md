@@ -13,11 +13,13 @@ This project is part of a Faculty Development Program (FDP) workshop. The goal i
         GND---->GND
         VCC---->VIN
         DATA---->D3
-   |DHT11     | NodeMCU|
+   
+|DHT11     | NodeMCU|
 | ----------- | ----------- |
 | GND   | GND    |
 | VCC   | VIN     |
 | DATA | D3    |
+
 3. Connect the NodeMCU to the OLED screen.
         GND----->GND
         VCC----->3V3
