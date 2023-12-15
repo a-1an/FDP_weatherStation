@@ -13,12 +13,17 @@ This project is part of a Faculty Development Program (FDP) workshop. The goal i
         GND---->GND
         VCC---->VIN
         DATA---->D3
-2. Connect the NodeMCU to the OLED screen.
+   |DHT11     | NodeMCU|
+| ----------- | ----------- |
+| GND   | GND    |
+| VCC   | VIN     |
+| DATA | D3    |
+3. Connect the NodeMCU to the OLED screen.
         GND----->GND
         VCC----->3V3
         SDA----->SDA(D2)
         SCL----->SCL(D1)
-3. Upload the provided code to the NodeMCU using the Arduino IDE.
+4. Upload the provided code to the NodeMCU using the Arduino IDE.
 
 ## Code
 The code for this project is written in Arduino (C++). It reads the temperature and humidity data from the DHT11 sensor, and displays it on the OLED screen.
