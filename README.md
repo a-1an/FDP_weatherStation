@@ -30,7 +30,7 @@ We welcome contributions to this project. If you have a feature request, bug rep
 This project is open source, under the MIT license.
 
 ## Contact
-[www.ide](https://idealab.mec.ac.in/)
+[idealab](https://idealab.mec.ac.in/)
 
 ## Acknowledgements
 We would like to thank all the students participating in this workshop. Your enthusiasm and hard work make this project possible.
